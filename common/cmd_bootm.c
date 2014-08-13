@@ -1696,7 +1696,7 @@ int do_booti(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 fail:
 #ifdef CONFIG_FASTBOOT
-	return do_fastboot(NULL, 0, 0, NULL);
+	return -1 /* do_fastboot(NULL, 0, 0, NULL) */;
 #else
 	return -1;
 #endif
