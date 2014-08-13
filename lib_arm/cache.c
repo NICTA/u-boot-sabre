@@ -34,3 +34,15 @@ void  flush_cache (unsigned long dummy1, unsigned long dummy2)
 #endif
 	return;
 }
+
+int   dcache_status (void){
+	/* Always off */
+	return 0;
+}
+
+void  dcache_enable (void){
+}
+
+void  dcache_disable(void){
+}
+
