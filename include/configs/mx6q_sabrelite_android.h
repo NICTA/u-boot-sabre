@@ -155,17 +155,35 @@
 
 #define CONFIG_INITRD_TAG
 
-#define	CONFIG_EXTRA_ENV_SETTINGS					\
-		"netdev=eth0\0"						\
-		"ethprime=FEC0\0"					\
-		"bootcmd=booti mmc1\0"
+
+#define CONFIG_ENV_SEL4								\
+	"sel4-image=sel4/sel4-image\0"						\
+	"sel4-netimage=sabre/sel4-image\0"					\
+	"bootsel4_net=dhcp 0x30000000 ${sel4-netimage} && bootelf\0"		\
+	"bootsel4_mmc="								\
+		"for disk in 1 0 ; do mmc dev ${disk} ;"			\
+		 "for part in 1 2 3 4; do "					\
+		  "for fs in fat ext2 ; do "					\
+		   "echo \" -- Trying ${fs} on SD ${disk}, partition ${part}\";"\
+		   "${fs}load mmc ${disk}:${part} 30000000 ${sel4-image} && "	\
+		     "bootelf ;" 						\
+		  "done ;"							\
+		 "done;"							\
+		"done;\0"
+
+#define CONFIG_EXTRA_ENV_SETTINGS						\
+	"netdev=eth0\0"								\
+	"ethprime=" CONFIG_PRIME "\0"						\
+	"ethaddr=00:19:b8:00:f0:a3\0"						\
+	CONFIG_ENV_SEL4
+
 #define CONFIG_ARP_TIMEOUT	200UL
 
 /*
  * Miscellaneous configurable options
  */
 #define CONFIG_SYS_LONGHELP		/* undef to save memory */
-#define CONFIG_SYS_PROMPT		"MX6Q SABRELITE U-Boot > "
+#define CONFIG_SYS_PROMPT		"NICTA MX6Q SABRELITE U-Boot > "
 #define CONFIG_AUTO_COMPLETE
 #define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
 /* Print Buffer Size */
@@ -200,8 +218,8 @@
 #define CONFIG_CMD_MII
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_PING
-#define CONFIG_IPADDR			192.168.1.103
-#define CONFIG_SERVERIP			192.168.1.101
+#define CONFIG_IPADDR			192.168.168.2
+#define CONFIG_SERVERIP			192.168.168.1
 #define CONFIG_NETMASK			255.255.255.0
 
 /*
